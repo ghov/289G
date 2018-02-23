@@ -1,3 +1,5 @@
+import gc_storage
+
 # Get the list of all blobs (files)
 files = list_files()
 pos_files = [x for x in files if 'diagrams_with_google_label' in x.name]
