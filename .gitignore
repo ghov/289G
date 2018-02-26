@@ -1,3 +1,7 @@
 #ignore python intermediary files
 StorageClient/__pycache__/
-
+sample_data/*
+__pycache__/
+.DS_Store
+siamese/siamese_finetuned/*
+!README
