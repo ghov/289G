@@ -1,0 +1,25 @@
+
+API docs:
+  https://developers.google.com/maps/
+  https://developers.google.com/maps/documentation/static-maps/
+  https://developers.google.com/maps/documentation/javascript/
+
+terms:
+  https://developers.google.com/maps/terms
+
+usage limits:
+  https://developers.google.com/maps/documentation/static-maps/usage-limits
+
+map/tile coordinates/projections:
+  https://en.wikipedia.org/wiki/Web_Mercator
+  https://developers.google.com/maps/documentation/javascript/coordinates
+  https://developers.google.com/maps/documentation/javascript/examples/map-coordinates
+  https://developers.google.com/maps/documentation/javascript/maptypes
+  https://wiki.openstreetmap.org/wiki/Slippy_map_tilenames
+
+pyproj
+  https://pypi.python.org/pypi/pyproj
+
+proj.4
+  http://proj4.org/
+
