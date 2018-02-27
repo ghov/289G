@@ -19,16 +19,18 @@ def list_files(expr=''):
 	'''
 	return [x for x in bucket.list_blobs() if expr in x.name]	
 
-
-def imload(blob):
+def imload(blob,clean=True):
 	'''
-		Grabs an img located at the input blob	
+		Grabs an img located at the input blob.
+		If clean=True, then does not save image
+		locally. If false, then saved to current dir.
 	'''
 	fname = blob.name.split('/')[-1]
 	with open(fname, "wb") as fw:
 		blob.download_to_file(fw)	
 	image = imread(fname)
-	os.remove(fname)
+	if clean:
+		os.remove(fname)
 	return image
 
 def get_file(pattern,files=[]):
@@ -38,7 +40,7 @@ def get_file(pattern,files=[]):
 		files = [x for x in files if pattern in x.name]
 	return files
 
-def get_img(report,files=[],img_dir='diagrams_with_google_label/'):
+def get_img(report,files=[],img_dir='diagrams_with_google_label/',clean=True):
 	'''
 		Gets an image by report ID
 	'''
@@ -48,17 +50,16 @@ def get_img(report,files=[],img_dir='diagrams_with_google_label/'):
 		files = get_file(img_dir+report,files)
 		if len(files) == 0:		
 			return np.NaN
-		return imload([x for x in files if '.png' in x.name][0])
+		return imload([x for x in files if '.png' in x.name][0],clean)
 	elif type(report) == list:
 		files = [get_file(img_dir+x,files) for x in report]
 		if all(len(x)==0 for x in files):
 			return np.NaN
-		return [imload([x for x in file if '.png' in x.name][0]) for file in files]
+		return [imload([x for x in file if '.png' in x.name][0],clean) for file in files]
 	else:
 		return np.NaN
 	
-
-def get_report(report,files=[],img_dir='diagrams_with_google_label/'):
+def get_report(report,files=[],img_dir='diagrams_with_google_label/',clean=True):
 	'''
 		Gets a report by report ID
 	'''
@@ -68,16 +69,16 @@ def get_report(report,files=[],img_dir='diagrams_with_google_label/'):
 		files = get_file(img_dir+report,files)
 		if len(files) == 0:		
 			return np.NaN
-		return imload([x for x in files if '.jpeg' in x.name][0])
+		return imload([x for x in files if '.jpeg' in x.name][0],clean)
 	elif type(report) == list:
 		files = [get_file(img_dir+x,files) for x in report]
 		if all(len(x)==0 for x in files):
 			return np.NaN
-		return [imload([x for x in file if '.jpeg' in x.name][0]) for file in files]
+		return [imload([x for x in file if '.jpeg' in x.name][0],clean) for file in files]
 	else:
 		return np.NaN
 
-def get_negatives(report,files=[],neg_dir='negatives'):
+def get_negatives(report,files=[],neg_dir='negatives/'):
 	'''
 		Gets a list of the negatives for a given report
 	'''
