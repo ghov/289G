@@ -30,8 +30,8 @@ for j in range(size_of_dir):
     if satelite_image==None or report_image==None:
         print('Could not find satelite and report image for'+relative_path)
         continue
-
-    class_name = os.path.basename(os.path.dirname(relative_path))
+    _,class_name = os.path.split(relative_path)
+    # print(class_name)
     satelite_image= class_name+'/'+satelite_image
     report_image = class_name+'/'+report_image
     triplets.append(report_image + '\t'+ satelite_image)
