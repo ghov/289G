@@ -103,7 +103,7 @@ with tf.Graph().as_default():
 
     # Create some summaries to visualize the training process:
     tf.summary.scalar('losses/TotalLoss', loss)
-    optimizer = tf.train.AdamOptimizer(learning_rate = 0.01).minimize(loss, name='optimizer')
+    optimizer = tf.train.AdamOptimizer(learning_rate = 0.00001).minimize(loss, name='optimizer')
     # Specify the optimizer and create the train op:
     init_all = tf.global_variables_initializer()
     saver = tf.train.Saver()
