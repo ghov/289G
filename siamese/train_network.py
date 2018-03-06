@@ -21,9 +21,9 @@ image_size = inception.inception_v1.default_image_size
 
 model = 'siamese_finetuned/model'
 print("begin tensor session")
-epochs = 1
-batch_size = 2
-save_step = 1
+epochs = 50
+batch_size = 1000
+save_step = 5
 train_file = '../data/train.txt'
 train_orch = DataOrchestrator(train_file, shuffle = True)
 batches_per_epoch = np.floor(train_orch.dataset_size / batch_size).astype(np.int16)
@@ -47,7 +47,6 @@ with tf.Session() as sess:
         step = 1
         while step < batches_per_epoch:
             batch_reports, batch_satelites, batch_labels = train_orch.get_next_training_batch(batch_size)
-            batch_labels= batch_labels.reshape((np.shape(batch_labels)[0],1))
             _, current_cost= sess.run([optimizer, loss], feed_dict={reports: batch_reports, satelites: batch_satelites, labels:batch_labels, train_phase:True})
             print(current_cost)
             if step%save_step == 0:

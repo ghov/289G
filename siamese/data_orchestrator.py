@@ -4,12 +4,12 @@ import random
 import math
 
 
-POS_SIZE=5
+POS_SIZE=1
 ZOOM_IN_ONE_FRACTION = 0.05
 ZOOM_IN_TWO_FRACTION = 0.10
 data_directory = '/Users/nicholasjoodi/Documents/ucdavis/computerScience/VisualRecognition/diagrams_with_google_label/'
 class DataOrchestrator:
-    def __init__(self, data_file, should_crop=True, corruption_size=15, shuffle=True, scale_size=(224, 224),\
+    def __init__(self, data_file, should_crop=True, corruption_size=20, shuffle=True, scale_size=(224, 224),\
      report_mean = np.array([245.8, 245.8, 245.8]), report_std = np.array([39.6, 39.5, 39.5]),\
      satelite_mean = np.array([93.0, 110.0, 109.8]), satelite_std = np.array([44.1, 47.5, 48.5])):
         self.should_crop=should_crop
@@ -74,10 +74,42 @@ class DataOrchestrator:
         result = cv2.warpAffine(image, rot_mat, image.shape[1::-1], flags=cv2.INTER_LINEAR)
         return result
 
+    def show_image(self,image ):
+        cv2.imshow("cropped", image)
+        cv2.waitKey(0)
+
+    def do_image_modification(self,image):
+        # self.show_image(image)
+        rando = np.random.random()
+        if rando <= 0.125:
+            image = self.rotate_image(image,45.0)
+        elif rando > 0.125 and rando<=0.25:
+            image = self.rotate_image(image,90.0)
+        elif rando > 0.25 and rando<=0.375:
+            image = self.rotate_image(image,135.0)
+        elif rando > 0.375 and rando<=0.5:
+            image = self.rotate_image(image,180.0)
+        elif rando > 0.5 and rando<=0.625:
+            image = self.rotate_image(image,225.0)
+        elif rando > 0.625 and rando<=0.75:
+            image = self.rotate_image(image,270.0)
+        elif rando > 0.75 and rando<=0.875:
+            image = self.rotate_image(image,315.0)
+        # self.show_image(image)
+        rando = np.random.random()
+        if rando <= 0.3:
+            image = self.crop(image,ZOOM_IN_ONE_FRACTION)
+        elif rando <= 0.6 and rando > 0.3:
+            image = self.crop(image,ZOOM_IN_TWO_FRACTION)
+        # self.show_image(image)
+        return image
+
+
     def reset_data_index(self):
         self.data_index = 0
         if self.shuffle:
             self.shuffle_data()
+
 
     def get_next_training_batch(self,batch_size):
         report_image_paths = self.reports[self.data_index:self.data_index + batch_size]
@@ -98,29 +130,23 @@ class DataOrchestrator:
                 report_correct = [self.crop_y(r) for r in report_correct]
                 report_corrupt = [self.crop_y(r) for r in report_corrupt]
             for i in range(len(report_correct)):
-                if i == 1:
-                    report_correct[i] = self.rotate_image(report_correct[i],-45.0)
-                elif i  == 2:
-                    report_correct[i] = self.rotate_image(report_correct[i],-90.0)
-                elif i  == 3:
-                    report_correct[i] = self.rotate_image(report_correct[i],45.0)
-                elif i  == 4:
-                    report_correct[i] = self.rotate_image(report_correct[i],90.0)
-                rando = np.random.random()
-                if rando <= 0.3:
-                    report_correct[i] = self.crop(report_correct[i],ZOOM_IN_ONE_FRACTION)
-                elif rando <= 0.6 and np.random.random() > 0.3:
-                    report_correct[i] = self.crop(report_correct[i],ZOOM_IN_TWO_FRACTION)
+                    report_correct[i] = self.do_image_modification(report_correct[i])
             report_correct = [cv2.resize(report_correct[j],(self.scale_size[0], self.scale_size[1])) for j in range(POS_SIZE)]
             report_corrupt = [cv2.resize(report_corrupt[j],(self.scale_size[0], self.scale_size[1])) for j in range(self.corruption_size )]
-
             report_correct = [ (report_correct[j]-self.report_mean)/self.report_std for j in range(POS_SIZE)]
             report_corrupt = [  (report_corrupt[j]-self.report_mean)/self.report_std for j in range(self.corruption_size)]
             satelites_total = [ (satelites_total[j]-self.satelite_mean)/self.satelite_std for j in range(self.corruption_size +POS_SIZE)]       
             reports = reports + report_correct + report_corrupt
             satelites = satelites + satelites_total
             labels = labels + label
-        return np.array(reports), np.array(satelites), np.array(labels)
+        reports = np.array(reports)
+        satelites = np.array(satelites)
+        labels = np.array(labels)
+        labels= labels.reshape((np.shape(labels)[0],1))
+        print(np.shape(reports))
+        print(np.shape(satelites))
+        print(np.shape(labels))
+        return reports, satelites, labels
 
 
             

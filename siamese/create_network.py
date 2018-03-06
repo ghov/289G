@@ -15,7 +15,6 @@ import data
 
 from tensorflow.contrib import slim
 image_size = inception.inception_v1.default_image_size
-batch_size = 3
 train_dir = 'siamese_finetuned/'
 satelite_inception_network_dir = '../pretrained_models/satelite_inception_network/'
 report_inception_network_dir = '../pretrained_models/report_inception_network/'
@@ -79,9 +78,6 @@ with tf.Graph().as_default():
     satelites = tf.placeholder(tf.float32, [None, image_size,image_size,3],name='satelites')
     labels = tf.placeholder(tf.float32, [None, 1],name='labels')
     train_phase = tf.placeholder(tf.bool,name='train_phase')
-    # dataset = data.get_data('../dataset/train/')
-    # satelites,reports, labels = load_batch(dataset,batch_size=1, height=image_size, width=image_size)
-    # reports, satelites, labels = get_sample_train_data()
     output_features = 4096
     with slim.arg_scope(inception.inception_v1_arg_scope()):
         # logits, _ = inception.inception_v1(reports, num_classes=output_features, is_training=True, scope='InceptionV1')
@@ -93,7 +89,7 @@ with tf.Graph().as_default():
         unormalized_satelite_features, _ = inception.inception_v1(satelites, num_classes=output_features, is_training=train_phase, scope='InceptionV2')
         satelite_features = tf.layers.batch_normalization(unormalized_satelite_features, training=train_phase)
 
-    margin = 0.2
+    margin = 545.7810675007589
 
 
     d = tf.reduce_sum(tf.square(report_features - satelite_features), 1)
