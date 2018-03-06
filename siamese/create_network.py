@@ -78,18 +78,20 @@ with tf.Graph().as_default():
     reports = tf.placeholder(tf.float32, [None, image_size,image_size,3], name='reports')
     satelites = tf.placeholder(tf.float32, [None, image_size,image_size,3],name='satelites')
     labels = tf.placeholder(tf.float32, [None, 1],name='labels')
+    train_phase = tf.placeholder(tf.bool,name='train_phase')
     # dataset = data.get_data('../dataset/train/')
     # satelites,reports, labels = load_batch(dataset,batch_size=1, height=image_size, width=image_size)
     # reports, satelites, labels = get_sample_train_data()
     output_features = 4096
     with slim.arg_scope(inception.inception_v1_arg_scope()):
         # logits, _ = inception.inception_v1(reports, num_classes=output_features, is_training=True, scope='InceptionV1')
-        report_features, _ = inception.inception_v1(reports, num_classes=output_features, is_training=True, scope='InceptionV1')
+        unormalized_report_features, _ = inception.inception_v1(reports, num_classes=output_features, is_training=train_phase, scope='InceptionV1')
+        report_features = tf.layers.batch_normalization(unormalized_report_features, training=train_phase)
 
     with slim.arg_scope(inception.inception_v1_arg_scope()):
         # logits_2, _ = inception.inception_v1(satelites, num_classes=output_features, is_training=True, scope='InceptionV2')
-        satelite_features, _ = inception.inception_v1(satelites, num_classes=output_features, is_training=True, scope='InceptionV2')
-
+        unormalized_satelite_features, _ = inception.inception_v1(satelites, num_classes=output_features, is_training=train_phase, scope='InceptionV2')
+        satelite_features = tf.layers.batch_normalization(unormalized_satelite_features, training=train_phase)
 
     margin = 0.2
 
@@ -103,7 +105,10 @@ with tf.Graph().as_default():
 
     # Create some summaries to visualize the training process:
     tf.summary.scalar('losses/TotalLoss', loss)
-    optimizer = tf.train.AdamOptimizer(learning_rate = 0.00001).minimize(loss, name='optimizer')
+    update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
+    with tf.control_dependencies(update_ops):
+        optimizer = tf.train.AdamOptimizer(learning_rate = 0.00001).minimize(loss)
+    #optimizer = tf.train.AdamOptimizer(learning_rate = 0.00001).minimize(loss, name='optimizer')
     # Specify the optimizer and create the train op:
     init_all = tf.global_variables_initializer()
     saver = tf.train.Saver()

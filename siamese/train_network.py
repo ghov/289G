@@ -23,7 +23,7 @@ model = 'siamese_finetuned/model'
 print("begin tensor session")
 epochs = 1
 batch_size = 2
-display_step = 1
+save_step = 1
 train_file = '../data/train.txt'
 train_orch = DataOrchestrator(train_file, shuffle = True)
 batches_per_epoch = np.floor(train_orch.dataset_size / batch_size).astype(np.int16)
@@ -32,6 +32,7 @@ with tf.Session() as sess:
     saver.restore(sess, model)
     graph = tf.get_default_graph()
     reports = graph.get_tensor_by_name("reports:0")
+    train_phase = graph.get_tensor_by_name("train_phase:0")
     satelites = graph.get_tensor_by_name("satelites:0")
     labels = graph.get_tensor_by_name("labels:0")
     optimizer =  tf.get_collection('optimizer')[0]
@@ -47,8 +48,12 @@ with tf.Session() as sess:
         while step < batches_per_epoch:
             batch_reports, batch_satelites, batch_labels = train_orch.get_next_training_batch(batch_size)
             batch_labels= batch_labels.reshape((np.shape(batch_labels)[0],1))
-            _, current_cost= sess.run([optimizer, loss], feed_dict={reports: batch_reports, satelites: batch_satelites, labels:batch_labels})
+            _, current_cost= sess.run([optimizer, loss], feed_dict={reports: batch_reports, satelites: batch_satelites, labels:batch_labels, train_phase:True})
             print(current_cost)
+            if step%save_step == 0:
+                saver.save(sess,model)
+                print('Saved model parameters')
+            step += 1
 
 
 
