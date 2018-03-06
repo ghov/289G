@@ -38,42 +38,28 @@ cv2.imshow("cropped", crop_img)
 cv2.waitKey(0)
 crop_img = crop(crop_img, 0.05)
 cv2.imshow("cropped", crop_img)
-# crop_img = img_report[y:y+30, x:x+30]
-# cv2.imshow("cropped", crop_img)
 cv2.waitKey(0)
 
 crop_img = crop(crop_img, 0.1)
 cv2.imshow("cropped", crop_img)
-# crop_img = img_report[y:y+30, x:x+30]
-# cv2.imshow("cropped", crop_img)
 cv2.waitKey(0)
 
 crop_img = rotateImage(crop_img, 90.0)
 cv2.imshow("cropped", crop_img)
-# crop_img = img_report[y:y+30, x:x+30]
-# cv2.imshow("cropped", crop_img)
 cv2.waitKey(0)
 
 crop_img = rotateImage(crop_img, -45.0)
 cv2.imshow("cropped", crop_img)
-# crop_img = img_report[y:y+30, x:x+30]
-# cv2.imshow("cropped", crop_img)
 cv2.waitKey(0)
 
 crop_img = rotateImage(crop_img, -45.0)
 cv2.imshow("cropped", crop_img)
-# crop_img = img_report[y:y+30, x:x+30]
-# cv2.imshow("cropped", crop_img)
 cv2.waitKey(0)
 
 crop_img = rotateImage(crop_img, -45.0)
 cv2.imshow("cropped", crop_img)
-# crop_img = img_report[y:y+30, x:x+30]
-# cv2.imshow("cropped", crop_img)
 cv2.waitKey(0)
 
 crop_img = rotateImage(crop_img, -45.0)
 cv2.imshow("cropped", crop_img)
-# crop_img = img_report[y:y+30, x:x+30]
-# cv2.imshow("cropped", crop_img)
 cv2.waitKey(0)
