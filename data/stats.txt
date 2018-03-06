@@ -5,3 +5,5 @@ report statistics:
 satelite statistics:
  - mean:[ 93.08452348 109.98226443 109.82506676]
  - std:[44.26688215 47.45916113 48.47259675]
+mean distance:
+545.7810675007589
