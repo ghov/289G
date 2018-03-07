@@ -22,7 +22,7 @@ image_size = inception.inception_v1.default_image_size
 model = 'siamese_finetuned/model'
 print("begin tensor session")
 epochs = 50
-batch_size = 10
+batch_size = 6
 save_step = 5
 train_file = '../data/train.txt'
 train_orch = DataOrchestrator(train_file, shuffle = True)
@@ -55,6 +55,7 @@ with tf.Session(config = config) as sess:
                 saver.save(sess,model)
                 print('Saved model parameters')
             step += 1
+        train_orch.reset_data_index()
 
 
 
