@@ -10,17 +10,15 @@ ZOOM_IN_TWO_FRACTION = 0.10
 data_directory = '/Users/nicholasjoodi/Documents/ucdavis/computerScience/VisualRecognition/diagrams_with_google_label/'
 class DataOrchestrator:
     def __init__(self, data_file, should_crop=True, corruption_size=20, shuffle=True, scale_size=(224, 224),\
-     report_mean = np.array([245.8, 245.8, 245.8]), report_std = np.array([39.6, 39.5, 39.5]),\
-     satelite_mean = np.array([93.0, 110.0, 109.8]), satelite_std = np.array([44.1, 47.5, 48.5])):
+     report_mean = np.array([245.8, 245.8, 245.8]),\
+     satelite_mean = np.array([93.0, 110.0, 109.8])):
         self.should_crop=should_crop
         self.shuffle=shuffle
         self.scale_size=scale_size
         self.data_index = 0
         self.index_data(data_file)
         self.report_mean = report_mean
-        self.report_std = report_std
         self.satelite_mean = satelite_mean
-        self.satelite_std = satelite_std
 
         self.corruption_size = corruption_size
         if self.shuffle:
@@ -133,9 +131,9 @@ class DataOrchestrator:
                     report_correct[i] = self.do_image_modification(report_correct[i])
             report_correct = [cv2.resize(report_correct[j],(self.scale_size[0], self.scale_size[1])) for j in range(POS_SIZE)]
             report_corrupt = [cv2.resize(report_corrupt[j],(self.scale_size[0], self.scale_size[1])) for j in range(self.corruption_size )]
-            report_correct = [ (report_correct[j]-self.report_mean)/self.report_std for j in range(POS_SIZE)]
-            report_corrupt = [  (report_corrupt[j]-self.report_mean)/self.report_std for j in range(self.corruption_size)]
-            satelites_total = [ (satelites_total[j]-self.satelite_mean)/self.satelite_std for j in range(self.corruption_size +POS_SIZE)]       
+            report_correct = [ (report_correct[j]-self.report_mean)for j in range(POS_SIZE)]
+            report_corrupt = [  (report_corrupt[j]-self.report_mean) for j in range(self.corruption_size)]
+            satelites_total = [ (satelites_total[j]-self.satelite_mean) for j in range(self.corruption_size +POS_SIZE)]       
             reports = reports + report_correct + report_corrupt
             satelites = satelites + satelites_total
             labels = labels + label
