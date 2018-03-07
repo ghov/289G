@@ -10,8 +10,8 @@ ZOOM_IN_TWO_FRACTION = 0.10
 data_directory = '/Users/nicholasjoodi/Documents/ucdavis/computerScience/VisualRecognition/diagrams_with_google_label/'
 class DataOrchestrator:
     def __init__(self, data_file, should_crop=True, corruption_size=20, shuffle=True, scale_size=(224, 224),\
-     report_mean = np.array([245.8, 245.8, 245.8]),\
-     satelite_mean = np.array([93.0, 110.0, 109.8])):
+     report_mean = np.array([245.57, 245.63, 245.59]),\
+     satelite_mean = np.array([ 89.18, 104.17, 103.25])):
         self.should_crop=should_crop
         self.shuffle=shuffle
         self.scale_size=scale_size
@@ -120,6 +120,7 @@ class DataOrchestrator:
         labels = []
 
         for i in range(len(report_image_paths)):
+            print(report_image_paths[i])
             label = [ 0.0 if j < POS_SIZE else 1.0 for j in range(POS_SIZE+ self.corruption_size)]
             report_correct = [cv2.imread(data_directory+report_image_paths[i]) for j in range(POS_SIZE)]
             report_corrupt = [cv2.imread(data_directory+self.reports[j]) for j in random.sample(range( len(self.reports)), self.corruption_size)]
@@ -141,9 +142,9 @@ class DataOrchestrator:
         satelites = np.array(satelites)
         labels = np.array(labels)
         labels= labels.reshape((np.shape(labels)[0],1))
-        print(np.shape(reports))
-        print(np.shape(satelites))
-        print(np.shape(labels))
+        # print(np.shape(reports))
+        # print(np.shape(satelites))
+        # print(np.shape(labels))
         return reports, satelites, labels
 
 
