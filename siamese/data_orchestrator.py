@@ -121,22 +121,21 @@ class DataOrchestrator:
 
         for i in range(len(report_image_paths)):
             print(report_image_paths[i])
+            print(satelite_image_paths[i])
             label = [ 0.0 if j < POS_SIZE else 1.0 for j in range(POS_SIZE+ self.corruption_size)]
-            report_correct = [cv2.imread(data_directory+report_image_paths[i]) for j in range(POS_SIZE)]
-            report_corrupt = [cv2.imread(data_directory+self.reports[j]) for j in random.sample(range( len(self.reports)), self.corruption_size)]
-            satelites_total = [cv2.resize(cv2.imread(data_directory+satelite_image_paths[i]),(self.scale_size[0], self.scale_size[1])) for j in range((self.corruption_size +POS_SIZE))]
+            satelites_total = [cv2.resize(cv2.imread(data_directory+satelite_image_paths[i]),(self.scale_size[0], self.scale_size[1])) for j in range(POS_SIZE)]
+            report_correct = [cv2.imread(data_directory+report_image_paths[i]) for j in range((self.corruption_size +POS_SIZE))]
+            satelites_total_corrupt = [cv2.resize(cv2.imread(data_directory+self.satelites[j]),(self.scale_size[0], self.scale_size[1])) for j in random.sample(range( len(self.satelites)), self.corruption_size)]
             if self.should_crop:
                 report_correct = [self.crop_y(r) for r in report_correct]
-                report_corrupt = [self.crop_y(r) for r in report_corrupt]
             for i in range(len(report_correct)):
-                    report_correct[i] = self.do_image_modification(report_correct[i])
-            report_correct = [cv2.resize(report_correct[j],(self.scale_size[0], self.scale_size[1])) for j in range(POS_SIZE)]
-            report_corrupt = [cv2.resize(report_corrupt[j],(self.scale_size[0], self.scale_size[1])) for j in range(self.corruption_size )]
-            report_correct = [ (report_correct[j]-self.report_mean)for j in range(POS_SIZE)]
-            report_corrupt = [  (report_corrupt[j]-self.report_mean) for j in range(self.corruption_size)]
-            satelites_total = [ (satelites_total[j]-self.satelite_mean) for j in range(self.corruption_size +POS_SIZE)]       
-            reports = reports + report_correct + report_corrupt
-            satelites = satelites + satelites_total
+                report_correct[i] = self.do_image_modification(report_correct[i])
+            report_correct = [cv2.resize(report_correct[j],(self.scale_size[0], self.scale_size[1])) for j in range((self.corruption_size +POS_SIZE))]
+            report_correct = [ (report_correct[j]-self.report_mean) for j in range((self.corruption_size +POS_SIZE))]
+            satelites_total = [ (satelites_total[j]-self.satelite_mean) for j in range(POS_SIZE)]    
+            satelites_total_corrupt = [ (satelites_total_corrupt[j]-self.satelite_mean) for j in range(self.corruption_size)]    
+            reports = reports + report_correct
+            satelites = satelites + satelites_total + satelites_total_corrupt
             labels = labels + label
         reports = np.array(reports)
         satelites = np.array(satelites)
@@ -148,27 +147,7 @@ class DataOrchestrator:
         return reports, satelites, labels
 
 
-    def get_next_training_batch_without_corruption(self,batch_size):
-        report_image_paths = self.reports[self.data_index:self.data_index + batch_size]
-        satelite_image_paths = self.satelites[self.data_index:self.data_index + batch_size]
-        self.data_index+=batch_size
-        reports = []
-        satelites = []
 
-        for i in range(len(report_image_paths)):
-            print(report_image_paths[i])
-            report_correct = cv2.imread(data_directory+report_image_paths[i])
-            satelites_total = cv2.resize(cv2.imread(data_directory+satelite_image_paths[i]),(self.scale_size[0], self.scale_size[1]))
-            if self.should_crop:
-                report_correct = self.crop_y(report_correct)
-            report_correct = cv2.resize(report_correct,(self.scale_size[0], self.scale_size[1]))
-            report_correct = [report_correct-self.report_mean]
-            satelites_total = [satelites_total-self.satelite_mean]
-            reports = reports + report_correct
-            satelites = satelites + satelites_total
-        reports = np.array(reports)
-        satelites = np.array(satelites)
-        return reports, satelites
 
 
             
