@@ -28,7 +28,7 @@ batch_size = 4
 save_step = 5
 train_file = '../data/train.txt'
 test_file = '../data/test_with_neg.txt'
-train_orch = DataOrchestrator(train_file, shuffle = True, corruption_size=1)
+train_orch = DataOrchestrator(train_file, shuffle = True, corruption_size=20)
 test_orch = TestDataOrchestrator(test_file)
 batches_per_epoch = np.floor(train_orch.dataset_size / batch_size).astype(np.int16)
 test_batches_per_epoch = np.floor(test_orch.dataset_size / batch_size).astype(np.int16)
