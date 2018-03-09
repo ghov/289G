@@ -4,4 +4,5 @@ sample_data/*
 __pycache__/
 .DS_Store
 siamese/siamese_finetuned/*
+siamese/siamese_checkpoint/*
 !README

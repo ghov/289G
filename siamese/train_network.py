@@ -24,7 +24,7 @@ checkpoint_path = 'siamese_checkpoint/'
 model = 'siamese_finetuned/model'
 print("begin tensor session")
 epochs = 50
-batch_size = 1
+batch_size = 4
 save_step = 5
 train_file = '../data/train.txt'
 test_file = '../data/test_with_neg.txt'
@@ -62,7 +62,6 @@ with tf.Session(config = config) as sess:
                 saver.save(sess,model)
                 print('Saved model parameters')
             step += 1
-            break
 
 
         print("{} testing".format(datetime.now()))
@@ -77,14 +76,15 @@ with tf.Session(config = config) as sess:
             else:
                 total_logits = np.concatenate((total_logits, logits), axis=0)
                 total_labels = np.concatenate((total_labels, batch_t_labels), axis=0)
-            break
         total_labels = total_labels.astype(int)
         aucPR, average_precision, roc_auc = metrics.get_metrics(total_labels,total_logits)
         print('aucPR: '+str(aucPR))
         print('average_precision: '+str(average_precision))
         print('roc_auc: '+str(roc_auc))
-
-        checkpoint_name = os.path.join(checkpoint_path, 'model_epoch'+str(epoch+1)+'.ckpt')
+        now=datetime.now()
+        checkpoint_dir = checkpoint_path+'/'+'model_epoch'+str(epoch+1)+'_'+now.isoformat()
+        os.makedirs(checkpoint_dir)
+        checkpoint_name = os.path.join(checkpoint_dir, 'model')
         save_path = saver.save(sess, checkpoint_name)  
 
         train_orch.reset_data_index()
