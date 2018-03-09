@@ -148,4 +148,27 @@ class DataOrchestrator:
         return reports, satelites, labels
 
 
+    def get_next_training_batch_without_corruption(self,batch_size):
+        report_image_paths = self.reports[self.data_index:self.data_index + batch_size]
+        satelite_image_paths = self.satelites[self.data_index:self.data_index + batch_size]
+        self.data_index+=batch_size
+        reports = []
+        satelites = []
+
+        for i in range(len(report_image_paths)):
+            print(report_image_paths[i])
+            report_correct = cv2.imread(data_directory+report_image_paths[i])
+            satelites_total = cv2.resize(cv2.imread(data_directory+satelite_image_paths[i]),(self.scale_size[0], self.scale_size[1]))
+            if self.should_crop:
+                report_correct = self.crop_y(report_correct)
+            report_correct = cv2.resize(report_correct,(self.scale_size[0], self.scale_size[1]))
+            report_correct = [report_correct-self.report_mean]
+            satelites_total = [satelites_total-self.satelite_mean]
+            reports = reports + report_correct
+            satelites = satelites + satelites_total
+        reports = np.array(reports)
+        satelites = np.array(satelites)
+        return reports, satelites
+
+
             
