@@ -120,8 +120,8 @@ class DataOrchestrator:
         labels = []
 
         for i in range(len(report_image_paths)):
-            print(report_image_paths[i])
-            print(satelite_image_paths[i])
+            # print(report_image_paths[i])
+            # print(satelite_image_paths[i])
             label = [ 0.0 if j < POS_SIZE else 1.0 for j in range(POS_SIZE+ self.corruption_size)]
             satelites_total = [cv2.resize(cv2.imread(data_directory+satelite_image_paths[i]),(self.scale_size[0], self.scale_size[1])) for j in range(POS_SIZE)]
             report_correct = [cv2.imread(data_directory+report_image_paths[i]) for j in range((self.corruption_size +POS_SIZE))]
