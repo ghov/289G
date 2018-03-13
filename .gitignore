@@ -5,4 +5,6 @@ __pycache__/
 .DS_Store
 siamese/siamese_finetuned/*
 siamese/siamese_checkpoint/*
+siamese/results/*
+siamese/figure/*
 !README
